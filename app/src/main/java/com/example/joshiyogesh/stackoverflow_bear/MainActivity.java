@@ -3,6 +3,8 @@ package com.example.joshiyogesh.stackoverflow_bear;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -13,8 +15,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /*
@@ -79,4 +89,55 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         return super.onCreateOptionsMenu(menu);
     }
+
+    //check for network connectivity while performing search
+    public boolean isNetworkAvailble(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
+        }
+        return false;
+    }
+
+    /*makes Http request to api url of stackOverflow and gets JSON object*/
+
+    public JSONObject makeHttpRequest(String url)throws IOException, JSONException,MalformedURLException {
+        JSONObject reponse;
+        String jsonString;
+        HttpURLConnection httpURLConnection = null;
+        BufferedReader bufferedReader = null;
+        try {
+            URL urlObject = new URL(url);
+            httpURLConnection = (HttpURLConnection) urlObject.openConnection();
+            httpURLConnection.connect();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            StringBuilder responseString = new StringBuilder();
+
+            String line;
+
+            while((line = bufferedReader.readLine())!= null){
+                responseString.append(line);
+            }
+
+            jsonString = responseString.toString();
+            reponse = new JSONObject(jsonString);
+
+            return reponse;
+        }
+        finally {
+            if (httpURLConnection!=null){
+                httpURLConnection.disconnect();
+            }
+            if (bufferedReader != null){
+                bufferedReader.close();
+            }
+        }
+
+    } /*end of connection methods */
+
 }
