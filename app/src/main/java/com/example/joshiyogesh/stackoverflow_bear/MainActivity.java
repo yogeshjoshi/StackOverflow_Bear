@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ArrayList<ArrayList<String>> listHolder = new ArrayList<ArrayList<String>>();
     ArrayList<String> sqlIds, sqlAuthors, sqlTitles, sqlVotes; //array lists to hold question details retrieved from the database
     QuestionDatabase questionDatabase = new QuestionDatabase();
-
+    OfflineDatabase offlineDatabase ;
     String val;
     /*Api url for stackExchange , its only initial url*/
     public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
@@ -282,6 +282,61 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
+
+/* Retrieves questions from the database asynchronously for cache data*/
+
+    public class SQLTask extends AsyncTask<String,String,ArrayList<ArrayList<String>>>{
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.e("SQLTask","onPreExecuteTask is started");
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Searching for Questions ...");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(true);
+            progressDialog.show();
+            Log.e("SQLTask","onPreExecute Task is completed successfully");
+        }
+
+
+        @Override
+        protected ArrayList<ArrayList<String>> doInBackground(String... params) {
+            try {
+                Log.e("Tag","doInBackGround is running");
+                //val == query which is serched
+                sqlAuthors = questionDatabase.getAuthorDetails(MainActivity.this, val);
+                sqlIds = questionDatabase.getIDDetails(MainActivity.this, val);
+                sqlTitles = questionDatabase.getTitleDetails(MainActivity.this, val);
+                sqlVotes = questionDatabase.getVoteDetails(MainActivity.this, val);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            listHolder.add(sqlIds);
+            listHolder.add(sqlTitles);
+            listHolder.add(sqlAuthors);
+            listHolder.add(sqlVotes);
+            val = null;
+            return listHolder;
+
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ArrayList<String>> arrayLists) {
+            ArrayList<String> ids = sqlIds;
+            ArrayList<String> title = sqlTitles;
+            ArrayList<String> author = sqlAuthors;
+            ArrayList<String> vote = sqlVotes;
+            imageView.setVisibility(View.GONE);
+            questionList.setVisibility(View.VISIBLE);
+            offlineDatabase = new OfflineDatabase(MainActivity.this, R.layout.question_list_item, ids, author, title, vote);
+            questionList.setAdapter(offlineDatabase);
+            progressDialog.dismiss();
+            val = null;
+            Toast.makeText(MainActivity.this, "Loaded from Cached Questions", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
 
