@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     OfflineDatabase offlineDatabase ;
     String val;
     /*Api url for stackExchange , its only initial url*/
-    public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
-
+    //public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
+    public String url = "https://http://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&";
     QuestionDatabase questionDatabase = new QuestionDatabase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         /*val '' consist query of search */
 
         boolean exists = questionDatabase.doesExist(MainActivity.this, val);
-        url += "intitle=" + query + "&site=stackoverflow";
+        url += "title=" + query + "&site=stackoverflow";
         imageView.setVisibility(View.GONE);
 
         questionList.setVisibility(View.VISIBLE);
