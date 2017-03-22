@@ -184,7 +184,7 @@ public class QuestionDatabase {
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM question WHERE search" + "= '" + search.trim() + "'"+ " COLLATE NOCASE", null);
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()) {
             if (cursor.getString(5).trim().equalsIgnoreCase(search.trim())) {
-                JSONObject json = new JSONObject(cursor.getString(1)); //
+                JSONObject json = new JSONObject(cursor.getString(4));
                 JSONArray jarr = json.optJSONArray("uniqueVotes");
                 for (int i = 0; i < jarr.length(); i++) {
                     items.add(jarr.getString(i));
