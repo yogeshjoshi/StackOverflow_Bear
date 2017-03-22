@@ -27,9 +27,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /*
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     /*Api url for stackExchange , its only initial url*/
     public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
 
-    QuestionDatabase q = new QuestionDatabase();
+    QuestionDatabase questionDatabase = new QuestionDatabase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         questionList = (ListView)findViewById(R.id.QuestionList) ;
@@ -75,8 +77,40 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+
+        mSearchView.setQuery("", false);
+        mSearchView.clearFocus();
+        /*searchView */
+        mSearchView.setIconified(true);
+
+        try {
+            query = URLEncoder.encode(query, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        val = query.trim(); //no white space side by side in given query
+        /*val '' consist query of search */
+
+        boolean exists = questionDatabase.doesExist(MainActivity.this, val);
+        url += "intitle=" + query + "&site=stackoverflow";
+        imageView.setVisibility(View.GONE);
+
+        questionList.setVisibility(View.VISIBLE);
+//first cached data would be loaded than newly data
+        if (exists == true) {
+            new SQLTask().execute();
+        } else {
+            if (isNetworkAvailble()) {
+                new JSONTask().execute();
+            } else {
+                imageView.setVisibility(View.VISIBLE);
+                questionList.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Offline ! Switch Your Mobile Dtata ON", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         return false;
-    }
+        }
 
     @Override
     public boolean onQueryTextChange(String newText) {
@@ -234,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     holdVotes.put("uniqueVotes", new JSONArray(votes));
                     String _vote = holdVotes.toString();
 
-                    q.insertQuestion(MainActivity.this, _id, _title, _auth, _vote, val);
+                    questionDatabase.insertQuestion(MainActivity.this, _id, _title, _auth, _vote, val);
                     questionList.setAdapter(adapter);
                     progressDialog.dismiss();
                 /*again changing the initial url ,, so that dynamic search can occur*/
@@ -247,6 +281,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }
     }
+
+
+
 
 
 }
