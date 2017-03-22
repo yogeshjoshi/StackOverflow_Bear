@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String selectedQuestion = null ; //here we have to remove null
+                String selectedQuestion = ((TextView) (view.findViewById(R.id.questionID))).getText().toString();
                 Intent intent = new Intent(MainActivity.this,AnswerActivity.class);
                 intent.putExtra("QUESTION",selectedQuestion);
                 startActivity(intent);
