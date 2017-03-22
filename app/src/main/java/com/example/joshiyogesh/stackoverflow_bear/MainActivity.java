@@ -58,10 +58,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     QuestionDatabase questionDatabase = new QuestionDatabase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        questionList = (ListView)findViewById(R.id.QuestionList) ;
-        imageView = (ImageView)findViewById(R.id.introImage);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        questionList = (ListView)findViewById(R.id.QuestionList) ;
+        imageView = (ImageView)findViewById(R.id.introImage);
+
         questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
