@@ -59,8 +59,8 @@ public class QuestionAdapter  extends ArrayAdapter<Question> {
             else {
                 /*setting questionds related field in question list view*/
                 questionHolder.textView.setText(Html.fromHtml(questionHold.title));
-                questionHolder.textView1.setText(questionHold.author);
-                questionHolder.textView2.setText(questionHold.votes + "votes");
+                questionHolder.textView1.setText( questionHold.author);
+                questionHolder.textView2.setText(questionHold.votes);
                 questionHolder.textView3.setText(questionHold.id);
             }
 
