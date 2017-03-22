@@ -38,7 +38,6 @@ public class AnswerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         /*getting questionId from MainActivity*/
         Bundle extras = getIntent().getExtras();
