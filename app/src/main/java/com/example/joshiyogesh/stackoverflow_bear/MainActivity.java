@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     QuestionAdapter adapter;
     ArrayList<ArrayList<String>> listHolder = new ArrayList<ArrayList<String>>();
     ArrayList<String> sqlIds, sqlAuthors, sqlTitles, sqlVotes; //array lists to hold question details retrieved from the database
-    QuestionDatabase questionDatabase = new QuestionDatabase();
     OfflineDatabase offlineDatabase ;
     String val;
     /*Api url for stackExchange , its only initial url*/
