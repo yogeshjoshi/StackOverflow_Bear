@@ -5,4 +5,19 @@ package com.example.joshiyogesh.stackoverflow_bear;
  */
 
 public class Answer {
+
+    public String text,author,votes;
+
+    public Answer()
+    {
+
+    }
+    public Answer(String text,String author,String votes)
+    {
+        this.text = text;
+        this.author = author;
+        this.votes = votes;
+    }
+
+
 }
