@@ -1,18 +1,22 @@
 package com.example.joshiyogesh.stackoverflow_bear;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     QuestionDatabase questionDatabase = new QuestionDatabase();
 
     String val;
-    /*Api url for stackExchange*/
+    /*Api url for stackExchange , its only initial url*/
     public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
 
-
+    QuestionDatabase q = new QuestionDatabase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         questionList = (ListView)findViewById(R.id.QuestionList) ;
@@ -139,5 +143,109 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
     } /*end of connection methods */
+
+    public class JSONTask extends AsyncTask<String,String,JSONObject> {
+        //        making progressDialogue box to visulize data effectively
+        /*progressDialog.setIndeterminate*/
+        private ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Searching ... ");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(true);
+            progressDialog.show();
+            Log.e("TAG","onPreExecute has been completed successfully");
+        }
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            try {
+
+                questionJSON = makeHttpRequest(url);
+                Log.e("HttpRequest","makeHttpRequest method has been completed successfully");
+                Log.e("TAG","doInBackground is running ");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.e("TAG","doInBackGroud  has been completed successfully");
+
+            return questionJSON;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject){
+            if (jsonObject != null){ //questionJSON object from doInBackGround is received
+                try {
+                    ArrayList<String> ids, authors, titles, votes;
+                    ids = new ArrayList<String>(20);
+                    authors = new ArrayList<String>(20);
+                    titles = new ArrayList<String>(20);
+                    votes = new ArrayList<String>(20);
+
+                    mJSONArray = jsonObject.getJSONArray("items");
+                    imageView.setVisibility(View.GONE);
+                    questionList.setVisibility(View.VISIBLE);
+
+                    Question question[] = new Question[mJSONArray.length()];
+//check if there is any question found or not
+                    if (question.length == 0){
+                        imageView.setVisibility(View.VISIBLE);
+                        questionList.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.this, "No Questions Found!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                    else{
+                        for (int i = 0; i < mJSONArray.length(); i++) {
+                            object1 = mJSONArray.getJSONObject(i);
+                            if (object1 != null) {
+                                object2 = object1.getJSONObject("owner");
+                            /*Changes have been made here in object receiving from JSON object */
+                                question[i] = new Question(object1.getString("title"), object2.getString("display_name"), object1.getString("score"), object1.getString("question_id"));
+                                ids.add(object1.getString("question_id"));
+                                authors.add(object2.getString("display_name"));
+                                titles.add(object1.getString("title"));
+                                votes.add(object1.getString("score"));
+                            }
+                        }
+                    }
+
+                    adapter = new QuestionAdapter(MainActivity.this,
+                            R.layout.question_list_item, question);
+
+                    holdID = new JSONObject();
+                    holdID.put("uniqueIDs", new JSONArray(ids));
+                    String _id = holdID.toString();
+
+                    holdAuthor = new JSONObject();
+                    holdAuthor.put("uniqueAuthors", new JSONArray(authors));
+                    String _auth = holdAuthor.toString();
+
+                    holdTitle = new JSONObject();
+                    holdTitle.put("uniqueTitles", new JSONArray(titles));
+                    String _title = holdTitle.toString();
+
+                    holdVotes = new JSONObject();
+                    holdVotes.put("uniqueVotes", new JSONArray(votes));
+                    String _vote = holdVotes.toString();
+
+                    q.insertQuestion(MainActivity.this, _id, _title, _auth, _vote, val);
+                    questionList.setAdapter(adapter);
+                    progressDialog.dismiss();
+                /*again changing the initial url ,, so that dynamic search can occur*/
+                    url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
 }
