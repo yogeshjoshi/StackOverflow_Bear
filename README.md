@@ -14,3 +14,8 @@ To Clone Project in Your Device :: https://github.com/yogeshjoshi/StackOverflow_
 Special Feature ::
     Cached Question can be seen when there is no Network Connection 
     
+Permission Required ::
+    
+    Internet
+    Acess_Network_State
+    
