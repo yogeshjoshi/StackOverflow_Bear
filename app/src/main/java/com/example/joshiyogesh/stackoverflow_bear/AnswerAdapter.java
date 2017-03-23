@@ -52,7 +52,7 @@ public class AnswerAdapter extends ArrayAdapter<Answer> {
         Answer hold = data[position];
         if(hold!=null) {
             answerHolder.textView1.setText(Html.fromHtml(hold.text));
-            answerHolder.textView2.setText(hold.author);
+            answerHolder.textView2.setText("answered by  "+hold.author);
             answerHolder.textView3.setText(hold.votes+" votes");
         }
         return rootView;
