@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     OfflineDatabase offlineDatabase ;
     String val;
     /*Api url for stackExchange , its only initial url*/
-    public String url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
+    public String url = "https://api.stackexchange.com/2.2/search?page=1&pagesize=20&order=desc&sort=votes&";
     QuestionDatabase questionDatabase = new QuestionDatabase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         questionList.setVisibility(View.VISIBLE);
 //first cached data would be loaded than newly data
         if (exists == true) {
-            new SQLTask().execute();
+            if(isNetworkAvailble()){
+                new JSONTask().execute();
+            }
+            else {
+                new SQLTask().execute();
+            }
+
         } else {
             if (isNetworkAvailble()) {
                 new JSONTask().execute();
@@ -271,8 +277,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     questionList.setAdapter(adapter);
                     progressDialog.dismiss();
                 /*again changing the initial url ,, so that dynamic search can occur*/
-                    url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
-
+//                    url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&";
+                    url = "https://api.stackexchange.com/2.2/search?page=1&pagesize=20&order=desc&sort=votes&";
 
                 } catch (JSONException e) {
                     e.printStackTrace();
