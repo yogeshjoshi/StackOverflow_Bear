@@ -28,7 +28,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class AnswerActivity extends AppCompatActivity {
-
+/*using stackOverFlow Api for geting answer based on questiond ids*/
     private final String initialURL = "http://api.stackexchange.com/2.2/";
     private String site = "site=stackoverflow";
     String requestUrl = null;
@@ -114,7 +114,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         }
     }
-
+/*Async Task :: because android doesnt provide all conectivity related in same thread*/
     public class JSONTask extends AsyncTask<String,String,JSONObject> {
 
         private ProgressDialog progressDialog;

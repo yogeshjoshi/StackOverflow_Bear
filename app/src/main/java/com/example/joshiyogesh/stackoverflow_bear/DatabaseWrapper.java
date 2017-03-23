@@ -8,7 +8,7 @@ import android.util.Log;
 /**
  * Created by Joshi Yogesh on 22/03/2017 at 17:00 IST.
  */
-
+/*Database Wrapper class for Sqlite Database*/
 public class DatabaseWrapper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseWrapper";

@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
     }
-
+/*this method is used to take query from searchView and then after receiving
+* query ,, appended to its api initial site*/
     @Override
     public boolean onQueryTextSubmit(String query) {
 
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         questionList.setVisibility(View.VISIBLE);
 //first cached data would be loaded than newly data
+        /*exists check either query is present in Database or not*/
         if (exists == true) {
             if(isNetworkAvailble()){
                 new JSONTask().execute();
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+        /*onCreateOptionsMenu inflate question list xml to show question*/
         getMenuInflater().inflate(R.menu.main_menu,menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     //check for network connectivity while performing search
+    //this method returns
     public boolean isNetworkAvailble(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -213,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+//used to check error in app || testing purpose
             Log.e("TAG","doInBackGroud  has been completed successfully");
 
             return questionJSON;
@@ -258,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                     adapter = new QuestionAdapter(MainActivity.this,
                             R.layout.question_list_item, question);
-
+                    //putting data into JSONobject for purpose of using in offline mode
                     holdID = new JSONObject();
                     holdID.put("uniqueIDs", new JSONArray(ids));
                     String _id = holdID.toString();
