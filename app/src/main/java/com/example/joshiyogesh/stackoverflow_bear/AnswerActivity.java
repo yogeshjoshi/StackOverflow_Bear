@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -33,15 +34,18 @@ public class AnswerActivity extends AppCompatActivity {
     JSONArray mJSONArray;
     AnswerAdapter answerAdapter;
     JSONObject ob3, ob2, answersJson;
-
+    TextView answerTitle;
+    String questionTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        answerTitle = (TextView)findViewById(R.id.answerTitle);
         /*getting questionId from MainActivity*/
         Bundle extras = getIntent().getExtras();
         String question = extras.getString("QUESTION");
+        questionTitle = extras.getString("QUESTION_TITLE");
         try {
             question = URLEncoder.encode(question, "utf-8");
         } catch (UnsupportedEncodingException e) {
@@ -134,6 +138,7 @@ public class AnswerActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
+            answerTitle.setText("Question : " + questionTitle);
             if (jsonObject != null) {
                 try {
                     mJSONArray = jsonObject.getJSONArray("items");

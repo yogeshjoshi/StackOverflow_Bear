@@ -65,10 +65,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                String questionTitle =( (TextView)(view.findViewById(R.id.questionTitle))).getText().toString();
                 String selectedQuestion = ((TextView) (view.findViewById(R.id.questionID))).getText().toString();
                 Intent intent = new Intent(MainActivity.this,AnswerActivity.class);
                 intent.putExtra("QUESTION",selectedQuestion);
+                intent.putExtra("QUESTION_TITLE",questionTitle);
                 startActivity(intent);
             }
         });
@@ -205,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 questionJSON = makeHttpRequest(url);
                 Log.e("HttpRequest","makeHttpRequest method has been completed successfully");
                 Log.e("TAG","doInBackground is running ");
+                //log is used for testing purpose
 
             } catch (JSONException e) {
                 e.printStackTrace();
