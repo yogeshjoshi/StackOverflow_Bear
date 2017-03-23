@@ -19,6 +19,7 @@
         android:divider="@null"
         android:scrollbars="none"
         android:dividerHeight="0dp"
-        ></ListView>
+        >
+    </ListView>
 
 </LinearLayout>
