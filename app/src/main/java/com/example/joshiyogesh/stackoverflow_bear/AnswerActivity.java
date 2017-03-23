@@ -2,6 +2,8 @@ package com.example.joshiyogesh.stackoverflow_bear;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -55,7 +57,9 @@ public class AnswerActivity extends AppCompatActivity {
 
         //appending the questionID to the URL
         requestUrl = this.initialURL + "questions/" + question + "/answers?order=desc&sort=activity&filter=withbody&" + this.site;
-
+        Resources r=getResources();
+        Drawable d=r.getDrawable(R.color.colorPrimary);
+        getSupportActionBar().setBackgroundDrawable(d);
         if (isNetworkAvailable()) {
             new JSONTask().execute();
         } else {
